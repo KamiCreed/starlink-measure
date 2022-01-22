@@ -102,7 +102,7 @@ resource "aws_instance" "web" {
   user_data                   = data.template_file.user_data.rendered
 
   tags = {
-    Name = "Learn-CloudInit"
+    Name = "iperf3-server"
   }
 }
 
