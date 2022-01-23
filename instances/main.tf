@@ -33,6 +33,8 @@ data "aws_availability_zones" "available" {
   state = "available"
 }
 
+data "aws_region" "current" {}
+
 resource "aws_vpc" "vpc" {
   cidr_block           = var.cidr_vpc
   enable_dns_support   = true
@@ -113,4 +115,7 @@ resource "aws_instance" "web" {
 
 output "public_ip" {
   value = aws_instance.web.public_ip
+}
+output "region_name" {
+  value = data.aws_region.current.description
 }
