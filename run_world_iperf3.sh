@@ -1,5 +1,5 @@
 #!/bin/env bash
-set -ex
+set -e
 
 unique_fname() {
     count=1
