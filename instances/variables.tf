@@ -11,3 +11,7 @@ variable "region" {
   description = "The region Terraform deploys your instance"
 }
 
+variable "instance_type" {
+  description = "Instance type of the server"
+  default = "t2.micro"
+}
