@@ -34,11 +34,15 @@ regions=(ap-southeast-2 ap-southeast-1 ap-northeast-1 ap-south-1 eu-west-2 me-so
 for region in "${regions[@]}"; do 
     (cd instances; terraform apply -auto-approve -var "region=$region" || true)
     instance_ip="$(cd instances; terraform output -raw public_ip)"
+    region_raw="$(cd instances; terraform output -raw region_name)"
 
-    dest_fold="${dest_fold}/${region}"
+    region_no_sp="${region_raw//[^[:alnum:]_]/}"
+    region_name="${region_no_sp// /_}"
+
+    dest_fold="${dest_fold}/${region_name}"
     mkdir "${dest_fold}"
-    name_down="${dest_fold}/dust-${region}-throughput-client-p4-down"
-    name_up="${dest_fold}/dust-${region}-throughput-client-p4-up"
+    name_down="${dest_fold}/${region}_throughput_client_p4_down"
+    name_up="${dest_fold}/${region}_throughput_client_p4_up"
 
     fname_down="$(unique_fname $name_down)"
     fname_up="$(unique_fname $name_up)"
