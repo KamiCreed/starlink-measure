@@ -59,6 +59,6 @@ for region in "${regions[@]}"; do
     echo "Logged measurements to the following:"
     echo "$fname_down"
     echo "$fname_up"
-
-    (cd instances; terraform destroy -auto-approve -var "region=$region")
 done
+
+(cd instances; terraform destroy -auto-approve -var "region=${regions[-1]}")
