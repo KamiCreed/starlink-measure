@@ -51,8 +51,9 @@ for region in "${regions[@]}"; do
     fname_down="$(unique_fname $name_down)"
     fname_up="$(unique_fname $name_up)"
     until run_iperf "$fname_down" "$fname_up" $length; do
-        echo "Sleeping and trying again..."
+        echo "Error. Sleeping and trying again..."
         sleep 30
+        echo "Starting..."
     done
     fg 2>/dev/null || true # Just in case the first one lags behind
 
