@@ -33,7 +33,7 @@ regions=(ap-southeast-2 ap-southeast-1 ap-northeast-1 ap-south-1 eu-west-2 me-so
 #regions=(ap-southeast-2 us-west-1)
 
 for region in "${regions[@]}"; do 
-    if [ region = 'me-south-1' ]; do
+    if [ region = 'me-south-1' ]; then
         (cd instances; terraform apply -auto-approve -var "region=$region" -var "instance_type=t3.micro")
     else
         (cd instances; terraform apply -auto-approve -var "region=$region")
@@ -66,7 +66,7 @@ for region in "${regions[@]}"; do
     echo "$fname_up"
 done
 
-if [ region = 'me-south-1' ]; do
+if [ region = 'me-south-1' ]; then
     (cd instances; terraform destroy -auto-approve -var "region=${regions[-1]}" -var "instance_type=t3.micro")
 else
     (cd instances; terraform destroy -auto-approve -var "region=${regions[-1]}")
