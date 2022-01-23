@@ -6,6 +6,7 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 dest_fold="$1"
+length=600
 
 unique_fname() {
     count=1
@@ -22,7 +23,7 @@ unique_fname() {
 run_iperf() {
     fname_down="$1"
     fname_up="$2"
-    length=600
+    length=$3
 
     iperf3 -c "$instance_ip" -R -Z -t $length -P 4 -J > "$fname_down" & 
     iperf3 -c "$instance_ip" -p 5202 -Z -t $length -P 4 -J > "$fname_up"
@@ -45,9 +46,11 @@ for region in "${regions[@]}"; do
     name_down="${dest_path}/${region}_throughput_client_p4_down"
     name_up="${dest_path}/${region}_throughput_client_p4_up"
 
+    echo "Attempting to run iperf3 for $length seconds"
+
     fname_down="$(unique_fname $name_down)"
     fname_up="$(unique_fname $name_up)"
-    until run_iperf "$fname_down" "$fname_up"; do
+    until run_iperf "$fname_down" "$fname_up" $length; do
         echo "Sleeping and trying again..."
         sleep 30
     done
