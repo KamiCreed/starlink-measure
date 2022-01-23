@@ -39,10 +39,10 @@ for region in "${regions[@]}"; do
     region_no_sp="${region_raw//[^[:alnum:]_]/}"
     region_name="${region_no_sp// /_}"
 
-    dest_fold="${dest_fold}/${region_name}"
-    mkdir "${dest_fold}"
-    name_down="${dest_fold}/${region}_throughput_client_p4_down"
-    name_up="${dest_fold}/${region}_throughput_client_p4_up"
+    dest_path="${dest_fold}/${region_name}"
+    mkdir "${dest_path}"
+    name_down="${dest_path}/${region}_throughput_client_p4_down"
+    name_up="${dest_path}/${region}_throughput_client_p4_up"
 
     fname_down="$(unique_fname $name_down)"
     fname_up="$(unique_fname $name_up)"
