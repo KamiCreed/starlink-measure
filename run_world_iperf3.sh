@@ -1,6 +1,12 @@
 #!/bin/env bash
 set -e
 
+if [ $# -eq 0 ]; then
+    echo "Please supply destination folder"
+    exit 1
+fi
+dest_fold="$1"
+
 unique_fname() {
     count=1
     name=$1
@@ -29,8 +35,10 @@ for region in "${regions[@]}"; do
     (cd instances; terraform apply -auto-approve -var "region=$region" || true)
     instance_ip="$(cd instances; terraform output -raw public_ip)"
 
-    name_down="${region}/dust-${region}-throughput-client-p4-down"
-    name_up="${region}/dust-${region}-throughput-client-p4-up"
+    dest_fold="${dest_fold}/${region}"
+    mkdir "${dest_fold}"
+    name_down="${dest_fold}/dust-${region}-throughput-client-p4-down"
+    name_up="${dest_fold}/dust-${region}-throughput-client-p4-up"
 
     fname_down="$(unique_fname $name_down)"
     fname_up="$(unique_fname $name_up)"
