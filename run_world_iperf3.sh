@@ -36,10 +36,10 @@ for region in "${regions[@]}"; do
     instance_ip="$(cd instances; terraform output -raw public_ip)"
     region_raw="$(cd instances; terraform output -raw region_name)"
 
-    region_name="${region_no_sp// /_}" # Replace spaces with underscores
-    region_no_sp="${region_raw//[^[:alnum:]_]/}" # Remove special charas except underscores
+    region_no_spaces="${region_raw// /_}" # Replace spaces with underscores
+    region_name="${region_no_spaces//[^[:alnum:]_]/}" # Remove special charas except underscores
 
-    dest_path="${dest_fold}/${region_name}"
+    dest_path="${dest_fold}/${region_no_sp}"
     mkdir "${dest_path}"
     name_down="${dest_path}/${region}_throughput_client_p4_down"
     name_up="${dest_path}/${region}_throughput_client_p4_up"
