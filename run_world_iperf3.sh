@@ -46,7 +46,7 @@ for region in "${regions[@]}"; do
 
     dest_path="${dest_fold}/${region_name}"
     echo "Saving to dir $dest_path"
-    mkdir "${dest_path}"
+    mkdir -p "${dest_path}"
     name_down="${dest_path}/${region}_throughput_client_p4_down"
     name_up="${dest_path}/${region}_throughput_client_p4_up"
 
