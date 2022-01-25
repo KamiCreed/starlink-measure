@@ -38,6 +38,7 @@ for region in "${regions[@]}"; do
     else
         (cd instances; terraform apply -auto-approve -var "region=$region")
     fi
+
     instance_ip="$(cd instances; terraform output -raw public_ip)"
     region_raw="$(cd instances; terraform output -raw region_name)"
 
@@ -64,10 +65,10 @@ for region in "${regions[@]}"; do
     echo "Logged measurements to the following:"
     echo "$fname_down"
     echo "$fname_up"
-done
 
-if [ region = 'me-south-1' ]; then
-    (cd instances; terraform destroy -auto-approve -var "region=${regions[-1]}" -var "instance_type=t3.micro")
-else
-    (cd instances; terraform destroy -auto-approve -var "region=${regions[-1]}")
-fi
+    if [ region = 'me-south-1' ]; then
+        (cd instances; terraform destroy -auto-approve -var "$region" -var "instance_type=t3.micro")
+    else
+        (cd instances; terraform destroy -auto-approve -var "$region")
+    fi
+done
