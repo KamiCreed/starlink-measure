@@ -67,8 +67,8 @@ for region in "${regions[@]}"; do
     echo "$fname_up"
 
     if [ region = 'me-south-1' ]; then
-        (cd instances; terraform destroy -auto-approve -var "$region" -var "instance_type=t3.micro")
+        (cd instances; terraform destroy -auto-approve -var "region=$region" -var "instance_type=t3.micro")
     else
-        (cd instances; terraform destroy -auto-approve -var "$region")
+        (cd instances; terraform destroy -auto-approve -var "region=$region")
     fi
 done
