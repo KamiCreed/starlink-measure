@@ -37,5 +37,5 @@ runcmd:
   - sudo apt update
   - sudo apt install -y libiperf0=3.6-2 iperf3=3.6-2
   - sudo apt-mark hold iperf3
-  - iperf3 -s -J -D > /home/terraform/dust-${region}-throughput-server-send.1.log
-  - iperf3 -s -J -D -p 5202 > /home/terraform/dust-${region}-throughput-server-receive.1.log
+  - iperf3 -s -J -D #> /home/terraform/dust-${region}-throughput-server-send.1.log
+  - iperf3 -s -J -D -p 5202 #> /home/terraform/dust-${region}-throughput-server-receive.1.log
