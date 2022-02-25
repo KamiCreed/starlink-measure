@@ -84,7 +84,7 @@ for region in "${regions[@]}"; do
     ssh_host="terraform@${instance_ip}"
     dest_server_path="${dest_fold}/${region_name}/${SERVER}/"
     mkdir -p "$dest_server_path"
-    scp ${ssh_host}:*.log "$dest_server_path"
+    scp -o "StrictHostKeyChecking=accept-new" ${ssh_host}:*.log "$dest_server_path"
 
     if [ region = 'me-south-1' ]; then
         (cd instances; terraform destroy -auto-approve -var "region=$region" -var "instance_type=t3.micro")
