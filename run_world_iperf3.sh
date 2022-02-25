@@ -71,10 +71,15 @@ for region in "${regions[@]}"; do
     fname_up="$(unique_fname ${name}_up)"
     fname_down_udp="$(unique_fname ${name}_down_udp)"
     fname_up_udp="$(unique_fname ${name}_up_udp)"
-    until run_iperf "$instance_ip" "$fname_down" "$fname_up" "$fname_down_udp" "$fname_up_udp" $length; do
-        echo "Error. Sleeping and trying again..."
-        sleep 30
-        echo "Starting..."
+    err=1
+    until [ "$err" == 0 ]; do
+        run_iperf "$instance_ip" "$fname_down" "$fname_up" "$fname_down_udp" "$fname_up_udp" $length
+        err=$?
+        if [ "$err" != 0 ]; then
+            echo "Error. Sleeping and trying again..."
+            sleep 30
+            echo "Starting..."
+        fi
     done
 
     echo "Logged measurements to the following:"
