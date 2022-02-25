@@ -23,24 +23,24 @@ unique_fname() {
 }
 
 run_iperf() {
-    fname_down="$1"
-    fname_up="$2"
-    fname_down_udp="$3"
-    fname_up_udp="$4"
-    length=$5
+    instance_ip=$1
+    fname_down="$2"
+    fname_up="$3"
+    fname_down_udp="$4"
+    fname_up_udp="$5"
+    length=$6
 
-    (
-        set -e # Subshell to exit on first error
+    ( set -e # Subshell to exit on first error
 
-        # TCP
-        iperf3 -c "$instance_ip" -R -Z -t $length -P 4 -J > "$fname_down" & 
-        iperf3 -c "$instance_ip" -p 5202 -Z -t $length -P 4 -J > "$fname_up"
-        wait
+    echo "Running TCP measurements"
+    iperf3 -c "$instance_ip" -R -Z -t $length -P 4 -J > "$fname_down" & 
+    iperf3 -c "$instance_ip" -p 5202 -Z -t $length -P 4 -J > "$fname_up"
+    wait
 
-        # UDP
-        iperf3 -c "$instance_ip" -R -Z -t $length -P 4 -J > "$fname_down_udp" & 
-        iperf3 -c "$instance_ip" -p 5202 -Z -t $length -P 4 -J > "$fname_up_udp"
-        wait
+    echo "Running UDP measurements"
+    iperf3 -c "$instance_ip" -R -Z -t $length -P 4 -J > "$fname_down_udp" & 
+    iperf3 -c "$instance_ip" -p 5202 -Z -t $length -P 4 -J > "$fname_up_udp"
+    wait
     )
 }
 
@@ -71,7 +71,7 @@ for region in "${regions[@]}"; do
     fname_up="$(unique_fname ${name}_up)"
     fname_down_udp="$(unique_fname ${name}_down_udp)"
     fname_up_udp="$(unique_fname ${name}_up_udp)"
-    until run_iperf "$fname_down" "$fname_up" "$fname_down_udp" "$fname_up_udp" $length; do
+    until run_iperf "$instance_ip" "$fname_down" "$fname_up" "$fname_down_udp" "$fname_up_udp" $length; do
         echo "Error. Sleeping and trying again..."
         sleep 30
         echo "Starting..."
