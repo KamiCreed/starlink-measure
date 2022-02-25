@@ -65,10 +65,10 @@ for region in "${regions[@]}"; do
 
     echo "Attempting to run iperf3 for $length seconds"
 
-    fname_down="$(unique_fname $name)_down"
-    fname_up="$(unique_fname $name)_up"
-    fname_down_udp="$(unique_fname $name)_down_udp"
-    fname_up_udp="$(unique_fname $name)_up_udp"
+    fname_down="$(unique_fname ${name}_down)"
+    fname_up="$(unique_fname ${name}_up)"
+    fname_down_udp="$(unique_fname ${name}_down_udp)"
+    fname_up_udp="$(unique_fname ${name}_up_udp)"
     until run_iperf "$fname_down" "$fname_up" "$fname_down_udp" "$fname_up_udp" $length; do
         echo "Error. Sleeping and trying again..."
         sleep 30
