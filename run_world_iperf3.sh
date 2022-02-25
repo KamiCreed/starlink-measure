@@ -58,7 +58,7 @@ for region in "${regions[@]}"; do
     region_no_spaces="${region_raw// /_}" # Replace spaces with underscores
     region_name="${region_no_spaces//[^[:alnum:]_]/}" # Remove special charas except underscores
 
-    dest_path="${dest_fold}/${region_name}"
+    dest_path="${dest_fold}/${region_name}/${CLIENT}"
     echo "Saving to dir $dest_path"
     mkdir -p "${dest_path}"
     name="${dest_path}/${region}_throughput_client_p4"
@@ -79,6 +79,11 @@ for region in "${regions[@]}"; do
     echo "Logged measurements to the following:"
     echo "$fname_down"
     echo "$fname_up"
+
+    ssh_host="terraform@${instance_ip}"
+    dest_server_path="${dest_fold}/${region_name}/${SERVER}/"
+    mkdir -p "$dest_server_path"
+    scp ${ssh_host}:*.log "$dest_server_path"
 
     if [ region = 'me-south-1' ]; then
         (cd instances; terraform destroy -auto-approve -var "region=$region" -var "instance_type=t3.micro")
