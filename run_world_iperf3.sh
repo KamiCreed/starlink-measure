@@ -1,6 +1,4 @@
 #!/bin/env bash
-set -e
-
 if [ $# -eq 0 ]; then
     echo "Please supply destination folder"
     exit 1
@@ -73,6 +71,7 @@ for region in "${regions[@]}"; do
     fname_up_udp="$(unique_fname ${name}_up_udp)"
     err=1
     until [ "$err" == 0 ]; do
+        # Must be run separately to properly exit the subshell upon error
         run_iperf "$instance_ip" "$fname_down" "$fname_up" "$fname_down_udp" "$fname_up_udp" $length
         err=$?
         if [ "$err" != 0 ]; then
