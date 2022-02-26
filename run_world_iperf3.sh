@@ -3,6 +3,9 @@ if [ $# -eq 0 ]; then
     echo "Please supply destination folder"
     exit 1
 fi
+
+export PATH=${PATH}:/home/pi/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/games:/usr/games
+
 dest_fold="$1"
 length=30
 CLIENT=client
