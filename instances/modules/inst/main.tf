@@ -100,7 +100,7 @@ resource "aws_security_group" "allow_iperf3" {
 }
 
 data "template_file" "user_data" {
-  template = file("../../../scripts/run-iperf3.yaml")
+  template = file("../scripts/run-iperf3.yaml")
 
   vars = {
     region = var.region
