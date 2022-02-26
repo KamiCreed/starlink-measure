@@ -42,18 +42,14 @@ run_iperf() {
     )
 }
 
-regions=(ap-southeast-2 ap-southeast-1 ap-northeast-1 ap-south-1 eu-west-2 me-south-1 sa-east-1 us-west-1)
-#regions=(ap-southeast-2 us-west-1)
+./gen_main_tf.py ap-southeast-2 ap-southeast-1 ap-northeast-1 ap-south-1 eu-west-2 me-south-1 sa-east-1 us-west-1
+#./gen_main_tf.py ap-southeast-2 us-west-1
+
+(cd instances; terraform apply -auto-approve) # Long spin up of instances
 
 for region in "${regions[@]}"; do 
-    if [ "$region" = 'me-south-1' ]; then
-        (cd instances; terraform apply -auto-approve -var "region=$region" -var "instance_type=t3.micro")
-    else
-        (cd instances; terraform apply -auto-approve -var "region=$region")
-    fi
-
-    instance_ip="$(cd instances; terraform output -raw public_ip)"
-    region_raw="$(cd instances; terraform output -raw region_name)"
+    instance_ip="$(cd instances; terraform output -raw ${region}_public_ip)"
+    region_raw="$(cd instances; terraform output -raw ${region}_region_name)"
 
     region_no_spaces="${region_raw// /_}" # Replace spaces with underscores
     region_name="${region_no_spaces//[^[:alnum:]_]/}" # Remove special charas except underscores
@@ -89,10 +85,6 @@ for region in "${regions[@]}"; do
     dest_server_path="${dest_fold}/${region_name}/${SERVER}/"
     mkdir -p "$dest_server_path"
     scp -o "StrictHostKeyChecking=accept-new" ${ssh_host}:*.log "$dest_server_path"
-
-    if [ region = 'me-south-1' ]; then
-        (cd instances; terraform destroy -auto-approve -var "region=$region" -var "instance_type=t3.micro")
-    else
-        (cd instances; terraform destroy -auto-approve -var "region=$region")
-    fi
 done
+
+(cd instances; terraform destroy -auto-approve)
