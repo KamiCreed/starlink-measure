@@ -4,6 +4,7 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
+# For raspberry pi crontab
 if [[ "$(uname -m)" == "armv7l" ]]; then
     export PATH=/home/pi/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/games:/usr/games
 fi
