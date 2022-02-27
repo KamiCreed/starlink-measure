@@ -18,7 +18,7 @@ unique_fname() {
     name=$1
     count=1
 
-    timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
+    timestamp=$(date -u +"%Y-%m-%d_%H-%M-%S")
     fname="${name}.${timestamp}.log"
 
     echo "$fname"

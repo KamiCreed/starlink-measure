@@ -38,5 +38,5 @@ runcmd:
   - sudo apt update
   - sudo apt install -y libiperf0=3.6-2 iperf3=3.6-2
   - sudo apt-mark hold iperf3
-  - iperf3 -s -J -D --forceflush --logfile /home/terraform/${region}-throughput-server-send.$(date +"%Y-%m-%d_%H-%M-%S").log
-  - iperf3 -s -J -D --forceflush --logfile /home/terraform/${region}-throughput-server-receive.$(date +"%Y-%m-%d_%H-%M-%S").log -p 5202
+  - iperf3 -s -J -D --forceflush --logfile /home/terraform/${region}-throughput-server-send.$(date -u +"%Y-%m-%d_%H-%M-%S").log
+  - iperf3 -s -J -D --forceflush --logfile /home/terraform/${region}-throughput-server-receive.$(date -u +"%Y-%m-%d_%H-%M-%S").log -p 5202
