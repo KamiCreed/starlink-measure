@@ -12,13 +12,11 @@ CLIENT=client
 SERVER=server
 
 unique_fname() {
-    count=1
     name=$1
-    fname="${name}.${count}.log"
+    count=1
 
-    while [ -e "$fname" ]; do
-        printf -v fname '%s.%02d.log' "$name" "$(( ++count ))"
-    done
+    timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
+    fname="${name}.${timestamp}.log"
 
     echo "$fname"
 }
