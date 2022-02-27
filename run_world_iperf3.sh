@@ -45,8 +45,10 @@ run_iperf() {
     )
 }
 
-./gen_main_tf.py ap-southeast-2 ap-southeast-1 ap-northeast-1 ap-south-1 eu-west-2 me-south-1 sa-east-1 us-west-1
-#./gen_main_tf.py ap-southeast-2 us-west-1
+regions=(ap-southeast-2 ap-southeast-1 ap-northeast-1 ap-south-1 eu-west-2 me-south-1 sa-east-1 us-west-1)
+#regions=(ap-southeast-2 us-west-1)
+
+./gen_main_tf.py "${regions[@]}"
 
 (cd instances; terraform init)
 (cd instances; terraform apply -auto-approve) # Long spin up of instances
