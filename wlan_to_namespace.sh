@@ -10,6 +10,7 @@ iw phy phy0 set netns "$(ip netns exec net_remote_ns sh -c 'sleep 1 >&- & echo "
 #ip link set wlan0 netns net_remote_ns
 
 ip netns exec net_remote_ns ip link set wlan0 up
+ip netns exec net_remote_ns ip link set lo up
 
 ip netns exec net_remote_ns dhclient wlan0
 
