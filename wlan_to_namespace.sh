@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+set -ex
 ip netns add net_remote_ns
 
 # Set namespace to use wlan0, after this point wlan0 is not usable by programs
