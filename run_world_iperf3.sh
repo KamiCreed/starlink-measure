@@ -34,10 +34,10 @@ run_iperf() {
 
     ( set -e # Subshell to exit on first error
 
-    echo "Running TCP measurements"
-    iperf3 -c "$instance_ip" -R -Z -t $length -P 4 -J > "$fname_down" & 
-    iperf3 -c "$instance_ip" -p 5202 -Z -t $length -P 4 -J > "$fname_up"
-    wait
+    #echo "Running TCP measurements"
+    #iperf3 -c "$instance_ip" -R -Z -t $length -P 4 -J > "$fname_down" & 
+    #iperf3 -c "$instance_ip" -p 5202 -Z -t $length -P 4 -J > "$fname_up"
+    #wait
 
     echo "Running UDP measurements"
     iperf3 -c "$instance_ip" -R -Z -t $length -u -b 65M -P 4 -J > "$fname_down_udp" & 
