@@ -14,3 +14,6 @@ ip netns exec net_remote_ns ip link set wlan0 up
 ip netns exec net_remote_ns dhclient wlan0
 
 ip netns exec net_remote_ns ping -c 3 google.ca
+
+# Move back to root namespace
+# ip netns exec mynetns iw phy phy0 set netns 1
