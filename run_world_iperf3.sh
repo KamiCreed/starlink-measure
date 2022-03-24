@@ -13,6 +13,7 @@ dest_fold="$1"
 length=30
 CLIENT=client
 SERVER=server
+MAX_RETRY=10
 
 unique_fname() {
     name=$1
@@ -40,8 +41,8 @@ run_iperf() {
     #wait
 
     echo "Running UDP measurements"
-    iperf3 -c "$instance_ip" -R -Z -t $length -u -b 75M -P 4 -J > "$fname_down_udp" & 
-    iperf3 -c "$instance_ip" -p 5202 -Z -t $length -u -b 7M -P 4 -J > "$fname_up_udp"
+    iperf3 -c "$instance_ip" -R -Z -t $length -u -b 57M -P 16 -J > "$fname_down_udp" & 
+    iperf3 -c "$instance_ip" -p 5202 -Z -t $length -u -b 38M -P 4 -J > "$fname_up_udp"
     wait
     )
 }
@@ -73,11 +74,13 @@ for region in "${regions[@]}"; do
     fname_down_udp="$(unique_fname ${name}_down_udp)"
     fname_up_udp="$(unique_fname ${name}_up_udp)"
     err=1
+    count=0
     until [ "$err" == 0 ]; do
         # Must be run separately to properly exit the subshell upon error
         run_iperf "$instance_ip" "$fname_down" "$fname_up" "$fname_down_udp" "$fname_up_udp" $length
         err=$?
-        if [ "$err" != 0 ]; then
+        if [ "$err" != 0 ] && [ "$count" -lt "$MAX_RETRY" ]; then
+            ((count++))
             echo "Error. Sleeping and trying again..."
             sleep 30
             echo "Starting..."
