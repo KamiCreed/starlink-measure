@@ -91,6 +91,10 @@ for region in "${regions[@]}"; do
     echo "$fname_down"
     echo "$fname_up"
 
+    if [ "$count" -ge "$MAX_RETRY" ]; then
+        echo "ERROR: Max Retries reached. Quitting measurements."
+    fi
+
     ssh_host="terraform@${instance_ip}"
     dest_server_path="${dest_fold}/${region_name}/${SERVER}/"
     mkdir -p "$dest_server_path"
