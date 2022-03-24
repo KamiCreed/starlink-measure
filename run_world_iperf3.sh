@@ -75,15 +75,15 @@ for region in "${regions[@]}"; do
     fname_up_udp="$(unique_fname ${name}_up_udp)"
     err=1
     count=0
-    until [ "$err" == 0 ]; do
+    until [ "$err" == 0 ] && [ "$count" -lt "$MAX_RETRY" ]; do
         # Must be run separately to properly exit the subshell upon error
         run_iperf "$instance_ip" "$fname_down" "$fname_up" "$fname_down_udp" "$fname_up_udp" $length
         err=$?
-        if [ "$err" != 0 ] && [ "$count" -lt "$MAX_RETRY" ]; then
-            ((count++))
+        if [ "$err" != 0 ]; then
             echo "Error. Sleeping and trying again..."
             sleep 30
-            echo "Starting..."
+            echo "Restarting..."
+            ((count++))
         fi
     done
 
