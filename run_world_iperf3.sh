@@ -40,9 +40,6 @@ run_iperf() {
     #iperf3 -c "$instance_ip" -p 5202 -Z -t $length -P 4 -J > "$fname_up"
     #wait
 
-    echo "Test one sec TCP"
-    iperf3 -c "$instance_ip" -R -Z -t 1
-
     echo "Running UDP measurements"
     iperf3 -c "$instance_ip" -R -Z -t $length -u -b 65M -P 4 -J > "$fname_down_udp" & 
     iperf3 -c "$instance_ip" -p 5202 -Z -t $length -u -b 38M -P 4 -J > "$fname_up_udp"
