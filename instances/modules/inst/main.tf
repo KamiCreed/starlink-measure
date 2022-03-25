@@ -40,8 +40,27 @@ resource "aws_default_vpc" "vpc" {
   enable_dns_hostnames = true
 }
 
-resource "aws_default_subnet" "subnet_public" {
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_default_vpc.vpc.id
+}
+
+resource "aws_subnet" "subnet_public" {
+  vpc_id     = aws_default_vpc.vpc.id
   availability_zone = data.aws_availability_zones.available.names[0]
+}
+
+resource "aws_route_table" "rtb_public" {
+  vpc_id = aws_default_vpc.vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.igw.id
+  }
+}
+
+resource "aws_route_table_association" "rta_subnet_public" {
+  subnet_id      = aws_subnet.subnet_public.id
+  route_table_id = aws_route_table.rtb_public.id
 }
 
 resource "aws_security_group" "allow_iperf3" {
@@ -89,7 +108,7 @@ data "template_file" "user_data" {
 resource "aws_instance" "web" {
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = var.instance_type
-  subnet_id                   = aws_default_subnet.subnet_public.id
+  subnet_id                   = aws_subnet.subnet_public.id
   vpc_security_group_ids      = [aws_security_group.allow_iperf3.id]
   associate_public_ip_address = true
   user_data                   = data.template_file.user_data.rendered
