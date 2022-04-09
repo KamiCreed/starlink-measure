@@ -10,7 +10,7 @@ if [[ "$(uname -m)" == "armv7l" ]]; then
 fi
 
 dest_fold="$1"
-length=30
+length=5
 CLIENT=client
 SERVER=server
 MAX_RETRY=10
@@ -47,8 +47,8 @@ run_iperf() {
     )
 }
 
-regions=(ap-southeast-2 ap-southeast-1 ap-northeast-1 ap-south-1 eu-west-2 me-south-1 sa-east-1 us-west-1)
-#regions=(ap-southeast-2 us-west-1)
+#regions=(ap-southeast-2 ap-southeast-1 ap-northeast-1 ap-south-1 eu-west-2 me-south-1 sa-east-1 us-west-1)
+regions=(ap-southeast-2 us-west-1)
 
 ./gen_main_tf.py "${regions[@]}"
 
