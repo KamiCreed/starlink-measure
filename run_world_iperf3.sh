@@ -41,8 +41,8 @@ run_iperf() {
     #wait
 
     echo "Running UDP measurements"
-    iperf3 -c "$instance_ip" -R -Z -t $length -u -b 80M -P 4 -J > "$fname_down_udp" & 
-    iperf3 -c "$instance_ip" -p 5202 -Z -t $length -u -b 5M -P 4 -J > "$fname_up_udp"
+    iperf3 -c "$instance_ip" -R -Z -t $length -u -b 78M -P 4 -J > "$fname_down_udp" & 
+    iperf3 -c "$instance_ip" -p 5202 -Z -t $length -u -b 4M -P 4 -J > "$fname_up_udp"
     wait
     )
 }
