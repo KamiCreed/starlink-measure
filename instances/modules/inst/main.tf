@@ -90,6 +90,12 @@ resource "aws_security_group" "allow_iperf3" {
     protocol    = "udp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  
+  ingress {
+    from_port = -1
+    to_port = -1
+    protocol = "icmp"
+  }
 
   egress {
     from_port   = 0
