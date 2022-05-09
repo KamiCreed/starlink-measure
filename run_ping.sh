@@ -35,10 +35,10 @@ for region in "${regions[@]}"; do
     echo "Saving to dir $dest_path"
     mkdir -p "${dest_path}"
 
-    name="${dest_path}/ping"
+    name="${dest_path}/ping_${region}"
     fname="$(unique_fname ${name})"
 
-    ./ping-csv.sh --add-timestamp -c 10 -I eth0 -4 "${instance_ip}" > "${fname}" &
+    ./ping-csv.sh --add-timestamp -I eth0 -4 "${instance_ip}" > "${fname}" &
 done
 
 wait
