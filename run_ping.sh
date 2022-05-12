@@ -38,7 +38,7 @@ for region in "${regions[@]}"; do
     name="${dest_path}/ping_${region}"
     fname="$(unique_fname ${name})"
 
-    ./ping-csv.sh --add-timestamp -I eth0 -4 "${instance_ip}" > "${fname}" &
+    ./ping-csv.sh --add-timestamp -4 "${instance_ip}" > "${fname}" &
 done
 
 wait
