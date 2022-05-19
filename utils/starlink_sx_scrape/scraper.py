@@ -3,6 +3,7 @@
 import os
 from time import sleep
 from time import time
+from datetime import datetime
 import re
 
 from config import local_stores
@@ -41,6 +42,11 @@ def main():
         EC.presence_of_element_located((By.ID, "satellites-table"))
     )
 
+    file_timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    dest_fold = 'starlink_satellite_data'
+    os.makedirs(dest_fold, exist_ok=True)
+    dest_path = os.path.join(dest_fold, f"satellites_{file_timestamp}.csv")
+
     for i in range(30):
         time_start = time()
         content = driver.page_source
@@ -57,7 +63,6 @@ def main():
         df_table['timestamp'] = time_start
         df_table['connectable_sats'] = num_sats
 
-        dest_path = 'test.csv'
         df_table.to_csv(dest_path, mode='a', index=False, header=not os.path.exists(dest_path))
         time_end = time()
         sleep(1 - (time_end - time_start))
