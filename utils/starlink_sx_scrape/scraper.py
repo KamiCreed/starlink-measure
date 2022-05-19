@@ -31,7 +31,10 @@ def main():
     #chrome_options.add_argument("--disable-extensions")
     #chrome_options.add_argument("--disable-gpu")
     #chrome_options.add_argument("--no-sandbox") # linux only
-    #chrome_options.add_argument("--headless")
+
+    chrome_options.add_argument("--headless")
+    print("Running headless mode")
+
     chrome_options.add_argument("--window-size=1920,1080")
     # chrome_options.headless = True # also works
 
@@ -51,6 +54,7 @@ def main():
     dest_fold = 'starlink_satellite_data'
     os.makedirs(dest_fold, exist_ok=True)
     dest_path = os.path.join(dest_fold, f"satellites_{file_timestamp}.csv")
+    print("Saving to", dest_path)
 
     count = 0
     while True:
@@ -72,7 +76,9 @@ def main():
         df_table.to_csv(dest_path, mode='a', index=False, header=not os.path.exists(dest_path))
         if count % 3600 == 0: # Every hour approx
             # Backup file
-            shutil.copy(dest_path, f"backup_satellites_{file_timestamp}.{curr_timestamp()}.csv")
+            backup_path = os.path.join(dest_fold, 
+                    f"backup_satellites_{file_timestamp}.{curr_timestamp()}.csv")
+            shutil.copy(dest_path, backup_path)
             count = 0
 
         count += 1
