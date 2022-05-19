@@ -5,6 +5,7 @@ from time import sleep
 from time import time
 from datetime import datetime
 import re
+import shutil
 
 from config import local_stores
 
@@ -20,6 +21,9 @@ from selenium.webdriver.support import expected_conditions as EC
 LATENCY = 'LATENCY'
 AZIMUTH = 'Az'
 ELEVATION = 'El'
+
+def curr_timestamp():
+    return datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
 def main():
     chrome_options = Options()
@@ -42,12 +46,13 @@ def main():
         EC.presence_of_element_located((By.ID, "satellites-table"))
     )
 
-    file_timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    file_timestamp = curr_timestamp()
     dest_fold = 'starlink_satellite_data'
     os.makedirs(dest_fold, exist_ok=True)
     dest_path = os.path.join(dest_fold, f"satellites_{file_timestamp}.csv")
 
-    for i in range(30):
+    count = 0
+    while True:
         time_start = time()
         content = driver.page_source
 
@@ -64,6 +69,12 @@ def main():
         df_table['connectable_sats'] = num_sats
 
         df_table.to_csv(dest_path, mode='a', index=False, header=not os.path.exists(dest_path))
+        if count % 3600 == 0: # Every hour approx
+            # Backup file
+            shutil.copy(dest_path, f"backup_satellites_{file_timestamp}.{curr_timestamp()}.csv")
+            count = 0
+
+        count += 1
         time_end = time()
         sleep(1 - (time_end - time_start))
 
