@@ -1,3 +1,6 @@
+First download/install the Chrome webdriver either using `apt` or place
+the .exe in the same folder.
+
 Create the file `config.py` and populate with the following:
 
 ```python
