@@ -74,7 +74,7 @@ def main():
         df_table['connectable_sats'] = num_sats
 
         df_table.to_csv(dest_path, mode='a', index=False, header=not os.path.exists(dest_path))
-        if count % 3600 == 0: # Every hour approx
+        if count > 3600: # Every hour approx
             # Backup file
             backup_path = os.path.join(dest_fold, 
                     f"backup_satellites_{file_timestamp}.{curr_timestamp()}.csv")
