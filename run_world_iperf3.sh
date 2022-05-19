@@ -1,6 +1,26 @@
 #!/bin/env bash
+show_help() {
+    echo "$0 [-n] path/to/dest_measurement_folder"
+}
+
+OPTIND=1 # Reset in case getopts has been used previously in the shell.
+
+while getopts "h?n" opt; do
+   case "$opt" in
+      h|\?) # display Help
+         show_help
+         exit 0
+         ;;
+     n) # Turns off starting up instances
+         no_instances=true
+         ;;
+   esac
+done
+
+shift $((OPTIND-1))
+
 if [ $# -eq 0 ]; then
-    echo "Please supply destination folder"
+    show_help
     exit 1
 fi
 
@@ -52,8 +72,12 @@ regions=(ap-southeast-2 us-west-1)
 
 ./gen_main_tf.py "${regions[@]}"
 
-(cd instances; terraform init)
-(cd instances; terraform apply -auto-approve) # Long spin up of instances
+if [ "$no_instances" != true ]; then
+    (cd instances; terraform init)
+    (cd instances; terraform apply -auto-approve) # Long spin up of instances
+fi
+
+./run_ping.sh -n "${dest_fold}_ping"
 
 for region in "${regions[@]}"; do 
     instance_ip="$(cd instances; terraform output -raw ${region}_public_ip)"
@@ -101,4 +125,6 @@ for region in "${regions[@]}"; do
     scp -o "StrictHostKeyChecking=accept-new" ${ssh_host}:*.log "$dest_server_path"
 done
 
-(cd instances; terraform destroy -auto-approve)
+if [ "$no_instances" != true ]; then
+    (cd instances; terraform destroy -auto-approve)
+fi

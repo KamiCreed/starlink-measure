@@ -1,6 +1,26 @@
 #!/bin/env bash
+show_help() {
+    echo "Usage: $0 [-n] path/to/dest_measurement_folder"
+}
+
+OPTIND=1 # Reset in case getopts has been used previously in the shell.
+
+while getopts "h?n" opt; do
+   case "$opt" in
+      h|\?) # display Help
+         show_help
+         exit 0
+         ;;
+     n) # Turns off starting up instances
+         no_instances=true
+         ;;
+   esac
+done
+
+shift $((OPTIND-1))
+
 if [ $# -eq 0 ]; then
-    echo "Please supply destination folder"
+    show_help
     exit 1
 fi
 
@@ -21,8 +41,10 @@ regions=(ap-southeast-2 ap-southeast-1 ap-northeast-1 ap-south-1 eu-west-2 me-so
 
 ./gen_main_tf.py "${regions[@]}"
 
-(cd instances; terraform init)
-(cd instances; terraform apply -auto-approve) # Long spin up of instances
+if [ "$no_instances" != true ]; then
+    (cd instances; terraform init)
+    (cd instances; terraform apply -auto-approve) # Long spin up of instances
+fi
 
 for region in "${regions[@]}"; do 
     instance_ip="$(cd instances; terraform output -raw ${region}_public_ip)"
@@ -42,4 +64,6 @@ for region in "${regions[@]}"; do
 done
 
 wait
-(cd instances; terraform destroy -auto-approve)
+if [ "$no_instances" != true ]; then
+    (cd instances; terraform destroy -auto-approve)
+fi
