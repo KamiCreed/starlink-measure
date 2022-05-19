@@ -21,6 +21,7 @@ from selenium.webdriver.support import expected_conditions as EC
 LATENCY = 'LATENCY'
 AZIMUTH = 'Az'
 ELEVATION = 'El'
+INTERVAL = 1
 
 def curr_timestamp():
     return datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
@@ -76,7 +77,9 @@ def main():
 
         count += 1
         time_end = time()
-        sleep(1 - (time_end - time_start))
+        elapsed = time_end - time_start
+        if INTERVAL > elapsed:
+            sleep(INTERVAL - elapsed)
 
     driver.close()
 
