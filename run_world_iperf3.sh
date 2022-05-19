@@ -77,7 +77,7 @@ if [ "$no_instances" != true ]; then
     (cd instances; terraform apply -auto-approve) # Long spin up of instances
 fi
 
-./run_ping.sh -n "${dest_fold}_ping"
+./run_ping.sh -n "${dest_fold}_ping" &
 
 for region in "${regions[@]}"; do 
     instance_ip="$(cd instances; terraform output -raw ${region}_public_ip)"

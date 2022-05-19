@@ -49,6 +49,9 @@ fi
 for region in "${regions[@]}"; do 
     instance_ip="$(cd instances; terraform output -raw ${region}_public_ip)"
     region_raw="$(cd instances; terraform output -raw ${region}_region_name)"
+    if [ -z "$instance_ip" ]; then
+        continue
+    fi
     
     region_no_spaces="${region_raw// /_}" # Replace spaces with underscores
     region_name="${region_no_spaces//[^[:alnum:]_]/}" # Remove special charas except underscores
