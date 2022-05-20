@@ -27,6 +27,13 @@ local_stores = {
 `observerLat` and `observerLng` is your Starlink dishy's latitude and longitudes.
 These values can be found in the local storage with the "Application" tab from chrome's devtools.
 
+Add in the variable 'htleFile' to set the starting datetime. The format is `YYYYMMDDHHMMSS`.
+For example,
+```
+'htleFile': '20220519120000'
+```
+to set the datetime to May 19th, 2022 at 12:00:00.
+
 Then, just run the scraper:
 ```
 python scraper.py
