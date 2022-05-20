@@ -70,7 +70,7 @@ def main():
         df_table[LATENCY] = df_table[LATENCY].str.extract('(\d+\.\d+)', expand=False)
         df_table[AZIMUTH] = df_table[AZIMUTH].str.extract('(\d+\.?\d*)', expand=False)
         df_table[ELEVATION] = df_table[ELEVATION].str.extract('(\d+\.?\d*)', expand=False)
-        df_table['timestamp'] = time_start
+        df_table['timestamp'] = driver.execute_script("return window.time_marker;")
         df_table['connectable_sats'] = num_sats
 
         df_table.to_csv(dest_path, mode='a', index=False, header=not os.path.exists(dest_path))
