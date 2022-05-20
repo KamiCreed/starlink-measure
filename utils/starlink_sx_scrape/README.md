@@ -20,10 +20,12 @@ local_stores = {
     'dishyAngle': '18',
     'dishyTilt': '18',
     'observerLng': '1.8950696'
+    'fltVersion': 'all',
     }
 ```
 
 `observerLat` and `observerLng` is your Starlink dishy's latitude and longitudes.
+These values can be found in the local storage with the "Application" tab from chrome's devtools.
 
 Then, just run the scraper:
 ```
