@@ -1,3 +1,4 @@
+*.img
 /instances/main.tf.json
 
 # Local .terraform directories
