@@ -6,6 +6,7 @@ from time import time
 from datetime import datetime
 import re
 import shutil
+import argparse
 
 from config import local_stores
 
@@ -26,7 +27,7 @@ INTERVAL = 1
 def curr_timestamp():
     return datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
-def main():
+def main(args):
     chrome_options = Options()
     #chrome_options.add_argument("--disable-extensions")
     #chrome_options.add_argument("--disable-gpu")
@@ -51,9 +52,8 @@ def main():
     )
 
     file_timestamp = curr_timestamp()
-    dest_fold = 'starlink_satellite_data'
-    os.makedirs(dest_fold, exist_ok=True)
-    dest_path = os.path.join(dest_fold, f"satellites_{file_timestamp}.csv")
+    os.makedirs(args.folder, exist_ok=True)
+    dest_path = os.path.join(args.folder, f"{args.name}_{file_timestamp}.csv")
     print("Saving to", dest_path)
 
     count = 0
@@ -76,8 +76,8 @@ def main():
         df_table.to_csv(dest_path, mode='a', index=False, header=not os.path.exists(dest_path))
         if count > 3600: # Every hour approx
             # Backup file
-            backup_path = os.path.join(dest_fold, 
-                    f"backup_satellites_{file_timestamp}.{curr_timestamp()}.csv")
+            backup_path = os.path.join(args.folder, 
+                    f"backup_{args.name}_{file_timestamp}.{curr_timestamp()}.csv")
             shutil.copy(dest_path, backup_path)
             count = 0
 
@@ -89,4 +89,9 @@ def main():
 
     driver.close()
 
-main()
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="Scrape starlink.sx to get satellite data.")
+    parser.add_argument('-f', '--folder', default='starlink_satellite_data', help='Destination folder for CSV files.')
+    parser.add_argument('-n', '--name', default='satellites', help='Prefix filename of CSV file.')
+    args = parser.parse_args()
+    main(args)
