@@ -30,7 +30,7 @@ if [[ "$(uname -m)" == "armv7l" ]]; then
 fi
 
 dest_fold="$1"
-length=5
+length=30
 CLIENT=client
 SERVER=server
 MAX_RETRY=10
