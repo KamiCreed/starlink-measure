@@ -30,7 +30,7 @@ if [[ "$(uname -m)" == "armv7l" ]]; then
 fi
 
 dest_fold="$1"
-length=30
+length=5
 CLIENT=client
 SERVER=server
 MAX_RETRY=10
@@ -45,26 +45,59 @@ unique_fname() {
     echo "$fname"
 }
 
-run_iperf() {
+run_tcp() {
     instance_ip=$1
     fname_down="$2"
     fname_up="$3"
-    fname_down_udp="$4"
-    fname_up_udp="$5"
-    length=$6
+    length=$4
 
-    ( set -e # Subshell to exit on first error
+    ( set -e
 
     echo "Running TCP measurements"
     iperf3 -c "$instance_ip" -R -Z -t $length -P 4 -J > "$fname_down" & 
     iperf3 -c "$instance_ip" -p 5202 -Z -t $length -P 4 -J > "$fname_up"
     wait
+    )
+}
+
+run_udp() {
+    instance_ip=$1
+    fname_down="$2"
+    fname_up="$3"
+    length=$4
+
+    ( set -e
 
     echo "Running UDP measurements"
-    iperf3 -c "$instance_ip" -R -Z -t $length -u -b 78M -P 4 -J > "$fname_down_udp" & 
-    iperf3 -c "$instance_ip" -p 5202 -Z -t $length -u -b 4M -P 4 -J > "$fname_up_udp"
+    iperf3 -c "$instance_ip" -R -Z -t $length -u -b 78M -P 4 -J > "$fname_down" & 
+    iperf3 -c "$instance_ip" -p 5202 -Z -t $length -u -b 4M -P 4 -J > "$fname_up"
     wait
     )
+}
+
+run_iperf() {
+    instance_ip=$1
+    fname_down=("$2" "$4")
+    fname_up=("$3" "$5")
+    length=$6
+
+    funcs=(run_tcp run_udp)
+
+    for i in ${!funcs[@]}; do
+        err=1
+        count=0
+        until [ "$err" == 0 ] && [ "$count" -lt "$MAX_RETRY" ]; do
+            # Must be run separately to properly exit the subshell upon error
+            ${funcs[$i]} $instance_ip "${fname_down[$i]}" "${fname_up[$i]}" $length
+            err=$?
+            if [ "$err" != 0 ]; then
+                echo "Error. Sleeping and trying again..."
+                sleep 30
+                echo "Restarting..."
+                ((count++))
+            fi
+        done
+    done
 }
 
 # 9 regions
@@ -98,19 +131,8 @@ for region in "${regions[@]}"; do
     fname_up="$(unique_fname ${name}_up)"
     fname_down_udp="$(unique_fname ${name}_down_udp)"
     fname_up_udp="$(unique_fname ${name}_up_udp)"
-    err=1
-    count=0
-    until [ "$err" == 0 ] && [ "$count" -lt "$MAX_RETRY" ]; do
-        # Must be run separately to properly exit the subshell upon error
-        run_iperf "$instance_ip" "$fname_down" "$fname_up" "$fname_down_udp" "$fname_up_udp" $length
-        err=$?
-        if [ "$err" != 0 ]; then
-            echo "Error. Sleeping and trying again..."
-            sleep 30
-            echo "Restarting..."
-            ((count++))
-        fi
-    done
+
+    run_iperf "$instance_ip" "$fname_down" "$fname_up" "$fname_down_udp" "$fname_up_udp" $length
 
     echo "Logged measurements to the following:"
     echo "$fname_down"
