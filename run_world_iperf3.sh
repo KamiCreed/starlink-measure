@@ -30,7 +30,7 @@ if [[ "$(uname -m)" == "armv7l" ]]; then
 fi
 
 dest_fold="$1"
-length=5
+length=30
 CLIENT=client
 SERVER=server
 MAX_RETRY=10
@@ -55,10 +55,10 @@ run_iperf() {
 
     ( set -e # Subshell to exit on first error
 
-    #echo "Running TCP measurements"
-    #iperf3 -c "$instance_ip" -R -Z -t $length -P 4 -J > "$fname_down" & 
-    #iperf3 -c "$instance_ip" -p 5202 -Z -t $length -P 4 -J > "$fname_up"
-    #wait
+    echo "Running TCP measurements"
+    iperf3 -c "$instance_ip" -R -Z -t $length -P 4 -J > "$fname_down" & 
+    iperf3 -c "$instance_ip" -p 5202 -Z -t $length -P 4 -J > "$fname_up"
+    wait
 
     echo "Running UDP measurements"
     iperf3 -c "$instance_ip" -R -Z -t $length -u -b 78M -P 4 -J > "$fname_down_udp" & 
@@ -68,8 +68,8 @@ run_iperf() {
 }
 
 # 9 regions
-#regions=(ap-southeast-2 ap-southeast-1 ap-northeast-1 ap-south-1 eu-west-2 me-south-1 sa-east-1 us-west-1 af-south-1)
-regions=(ap-southeast-2 us-west-1)
+regions=(ap-southeast-2 ap-southeast-1 ap-northeast-1 ap-south-1 eu-west-2 me-south-1 sa-east-1 us-west-1 af-south-1)
+#regions=(ap-southeast-2 us-west-1)
 
 ./gen_main_tf.py "${regions[@]}"
 
