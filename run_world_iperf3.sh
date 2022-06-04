@@ -100,7 +100,7 @@ run_iperf() {
             err=$?
             if [ "$err" != 0 ]; then
                 echo "Error. Sleeping and trying again..."
-                sleep 30
+                sleep 10
                 echo "Restarting..."
                 ((count++))
             fi
