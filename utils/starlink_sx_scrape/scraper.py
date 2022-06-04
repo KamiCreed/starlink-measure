@@ -56,7 +56,6 @@ def main(args):
     dest_path = os.path.join(args.folder, f"{args.name}_{file_timestamp}.csv")
     print("Saving to", dest_path)
 
-    count = 0
     while True:
         time_start = time()
         content = driver.page_source
@@ -74,14 +73,7 @@ def main(args):
         df_table['connectable_sats'] = num_sats
 
         df_table.to_csv(dest_path, mode='a', index=False, header=not os.path.exists(dest_path))
-        if count > 3600: # Every hour approx
-            # Backup file
-            backup_path = os.path.join(args.folder, 
-                    f"backup_{args.name}_{file_timestamp}.{curr_timestamp()}.csv")
-            shutil.copy(dest_path, backup_path)
-            count = 0
 
-        count += 1
         time_end = time()
         elapsed = time_end - time_start
         if INTERVAL > elapsed:
