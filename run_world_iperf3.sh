@@ -3,9 +3,12 @@ show_help() {
     echo "$0 [-n] path/to/dest_measurement_folder"
 }
 
+bits_down=78M
+bits_up=4M
+
 OPTIND=1 # Reset in case getopts has been used previously in the shell.
 
-while getopts "h?n" opt; do
+while getopts "h?nd:u:" opt; do
    case "$opt" in
       h|\?) # display Help
          show_help
@@ -14,6 +17,11 @@ while getopts "h?n" opt; do
      n) # Turns off starting up instances
          no_instances=true
          ;;
+     d) # UDP bits download bandwidth
+         bits_down="$OPTARG"
+         ;;
+     u) # UDP bits upload bandwidth
+         bits_up="$OPTARG"
    esac
 done
 
@@ -69,8 +77,8 @@ run_udp() {
     ( set -e
 
     echo "Running UDP measurements"
-    iperf3 -c "$instance_ip" -R -Z -t $length -u -b 78M -P 4 -J > "$fname_down" & 
-    iperf3 -c "$instance_ip" -p 5202 -Z -t $length -u -b 4M -P 4 -J > "$fname_up"
+    iperf3 -c "$instance_ip" -R -Z -t $length -u -b $bits_down -P 4 -J > "$fname_down" & 
+    iperf3 -c "$instance_ip" -p 5202 -Z -t $length -u -b $bits_up -P 4 -J > "$fname_up"
     wait
     )
 }
@@ -97,12 +105,15 @@ run_iperf() {
                 ((count++))
             fi
         done
+
+        sleep 5 # Wait before next test
     done
 }
 
 # 9 regions
 regions=(ap-southeast-2 ap-southeast-1 ap-northeast-1 ap-south-1 eu-west-2 me-south-1 sa-east-1 us-west-1 af-south-1)
 #regions=(ap-southeast-2 us-west-1)
+#regions=(us-west-1)
 
 ./gen_main_tf.py "${regions[@]}"
 
