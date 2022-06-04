@@ -106,7 +106,7 @@ run_iperf() {
             fi
         done
 
-        sleep 5 # Wait before next test
+        sleep 1 # Wait before next test
     done
 }
 
