@@ -51,13 +51,17 @@ run_iperf() {
     ( set -e # Subshell to exit on first error
 
     name="${dest_path}/${region}_scp"
-    fname_down="$(unique_fname ${name}_down)"
-    fname_up="$(unique_fname ${name}_up)"
+    fname_down="${name}_down"
+    fname_up="${name}_up"
 
     sizes=(1 10 100 500 1000)
+    timestamp=$(date -u +"%Y-%m-%d_%H-%M-%S")
+    headers="timestamp,region,1MB,10MB,100MB,500MB,1000MB"
     echo "Running SCP measurements"
-    echo "region,1MB,10MB,100MB,500MB,1000MB" > "$fname_down"
-    echo "region,1MB,10MB,100MB,500MB,1000MB" > "$fname_up"
+    echo "$headers" > "$fname_down"
+    echo "$headers" > "$fname_up"
+    echo -n "${timestamp}," >> "$fname_down"
+    echo -n "${timestamp}," >> "$fname_up"
     echo -n "${region}," >> "$fname_down"
     echo -n "${region}," >> "$fname_up"
 
@@ -66,7 +70,7 @@ run_iperf() {
     { time scp test_${sizes[0]}M.img terraform@${instance_ip}: ; } |& egrep ^[0-9]+.[0-9]+ | \
         tr '\n' ',' >> "$fname_up"
 
-    for i in $(seq 0 $(expr ${#sizes[@]} - 1)); do 
+    for i in $(seq 0 $(expr ${#sizes[@]} - 2)); do 
         { time scp terraform@${instance_ip}:test_${sizes[i]}M.img . ; } |& egrep ^[0-9]+.[0-9]+ | \
             tr '\n' ',' >> "$fname_down" &
         
@@ -76,6 +80,7 @@ run_iperf() {
         { time scp test_${forward}M.img terraform@${instance_ip}: ; } |& egrep ^[0-9]+.[0-9]+ | \
             tr '\n' ',' >> "$fname_up"
         wait # In case download is slower
+        echo "Finished ${sizes[i]} MB"
     done
 
     { time scp terraform@${instance_ip}:test_${sizes[-1]}M.img . ; } |& egrep ^[0-9]+.[0-9]+ | \
@@ -117,7 +122,7 @@ for region in "${regions[@]}"; do
         err=$?
         if [ "$err" != 0 ]; then
             echo "Error. Sleeping and trying again..."
-            sleep 30
+            sleep 10
             echo "Restarting..."
             ((count++))
         fi
@@ -129,6 +134,8 @@ for region in "${regions[@]}"; do
     if [ "$count" -ge "$MAX_RETRY" ]; then
         echo "ERROR: Max Retries reached. Quitting measurements."
     fi
+
+    sleep 3
 done
 
 if [ "$no_instances" != true ]; then
