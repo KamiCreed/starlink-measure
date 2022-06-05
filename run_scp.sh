@@ -42,6 +42,29 @@ unique_fname() {
     echo "$fname"
 }
 
+run_scp_down() {
+    instance_ip=$1
+    mb=$2
+
+    ( set -e
+
+    out=$({ time scp terraform@${instance_ip}:test_${mb}M.img . ; } |& egrep ^[0-9]+.[0-9]+)
+    echo -n "$out"
+    )
+}
+
+run_scp_up() {
+    instance_ip=$1
+    mb=$2
+    
+    ( set -e
+
+    fallocate -l ${mb}M test_${mb}M.img
+    out=$({ time scp test_${mb}M.img terraform@${instance_ip}: ; } |& egrep ^[0-9]+.[0-9]+)
+    echo -n "$out"
+    )
+}
+
 run_iperf() {
     instance_ip=$1
     dest_path="$2"
@@ -51,40 +74,46 @@ run_iperf() {
     ( set -e # Subshell to exit on first error
 
     name="${dest_path}/${region}_scp"
-    fname_down="${name}_down"
-    fname_up="${name}_up"
+    fname_down="${name}_down.csv"
+    fname_up="${name}_up.csv"
 
     sizes=(1 10 100 500 1000)
-    timestamp=$(date -u +"%Y-%m-%d_%H-%M-%S")
+    timestamp=$(date -u +"%s")
     headers="timestamp,region,1MB,10MB,100MB,500MB,1000MB"
     echo "Running SCP measurements"
-    echo "$headers" > "$fname_down"
-    echo "$headers" > "$fname_up"
+    if [ ! -f "$fname_down" ]; then
+        echo "$headers" > "$fname_down"
+    else
+        echo '' >> "$fname_down"
+    fi
+    if [ ! -f "$fname_up" ]; then
+        echo "$headers" > "$fname_up"
+    else
+        echo '' >> "$fname_up"
+    fi
     echo -n "${timestamp}," >> "$fname_down"
     echo -n "${timestamp}," >> "$fname_up"
     echo -n "${region}," >> "$fname_down"
     echo -n "${region}," >> "$fname_up"
 
-    TIMEFORMAT='%R'
-    fallocate -l 1M test_1M.img
-    { time scp test_${sizes[0]}M.img terraform@${instance_ip}: ; } |& egrep ^[0-9]+.[0-9]+ | \
-        tr '\n' ',' >> "$fname_up"
+    scp_up_time=$(run_scp_up $instance_ip ${sizes[0]})
+    echo -n "${scp_up_time}," >> "$fname_up"
 
     for i in $(seq 0 $(expr ${#sizes[@]} - 2)); do 
-        { time scp terraform@${instance_ip}:test_${sizes[i]}M.img . ; } |& egrep ^[0-9]+.[0-9]+ | \
-            tr '\n' ',' >> "$fname_down" &
+        scp_down_time=$(run_scp_down $instance_ip ${sizes[i]} &)
         
         next_id=$(expr ${i} + 1)
         forward=${sizes[next_id]}
-        fallocate -l ${forward}M test_${forward}M.img
-        { time scp test_${forward}M.img terraform@${instance_ip}: ; } |& egrep ^[0-9]+.[0-9]+ | \
-            tr '\n' ',' >> "$fname_up"
+        scp_up_time=$(run_scp_up $instance_ip $forward)
+        echo -n "${scp_up_time}," >> "$fname_up"
+
         wait # In case download is slower
+        echo -n "${scp_down_time}," >> "$fname_down"
         echo "Finished ${sizes[i]} MB"
     done
 
-    { time scp terraform@${instance_ip}:test_${sizes[-1]}M.img . ; } |& egrep ^[0-9]+.[0-9]+ | \
-        tr -d '\n' >> "$fname_down"
+    scp_down_time=$(run_scp_down $instance_ip ${sizes[-1]})
+    echo -n "$scp_down_time" >> "$fname_down"
     )
 }
 
