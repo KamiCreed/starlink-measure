@@ -110,6 +110,10 @@ run_iperf() {
     done
 }
 
+destroy_instances() {
+    (cd instances; terraform destroy -auto-approve)
+}
+
 # 9 regions
 regions=(ap-southeast-2 ap-southeast-1 ap-northeast-1 ap-south-1 eu-west-2 me-south-1 sa-east-1 us-west-1 af-south-1)
 #regions=(ap-southeast-2 us-west-1)
@@ -120,6 +124,7 @@ regions=(ap-southeast-2 ap-southeast-1 ap-northeast-1 ap-south-1 eu-west-2 me-so
 if [ "$no_instances" != true ]; then
     (cd instances; terraform init)
     (cd instances; terraform apply -auto-approve) # Long spin up of instances
+    trap destroy_instances EXIT # Destroy instances on exit for any reason
 fi
 
 #./run_ping.sh -n "${dest_fold}_ping" &
@@ -158,7 +163,3 @@ for region in "${regions[@]}"; do
     mkdir -p "$dest_server_path"
     scp -o "StrictHostKeyChecking=accept-new" ${ssh_host}:*.log "$dest_server_path"
 done
-
-if [ "$no_instances" != true ]; then
-    (cd instances; terraform destroy -auto-approve)
-fi

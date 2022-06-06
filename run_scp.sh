@@ -79,8 +79,8 @@ run_iperf() {
     fname_down="${name}_down.csv"
     fname_up="${name}_up.csv"
 
-    sizes=(1 10 100 200 500)
-    headers="timestamp,region,1MB,10MB,100MB,200MB,500MB"
+    sizes=(1 10 100 200 300)
+    headers="timestamp,region,1MB,10MB,100MB,200MB,300MB"
     timestamp=$(date -u +"%s")
     echo "Running SCP measurements"
     if [ ! -f "$fname_down" ]; then
@@ -119,6 +119,10 @@ run_iperf() {
     )
 }
 
+destroy_instances() {
+    (cd instances; terraform destroy -auto-approve)
+}
+
 # 9 regions
 regions=(ap-southeast-2 ap-southeast-1 ap-northeast-1 ap-south-1 eu-west-2 me-south-1 sa-east-1 us-west-1 af-south-1)
 #regions=(ap-southeast-2 us-west-1)
@@ -128,6 +132,7 @@ regions=(ap-southeast-2 ap-southeast-1 ap-northeast-1 ap-south-1 eu-west-2 me-so
 if [ "$no_instances" != true ]; then
     (cd instances; terraform init)
     (cd instances; terraform apply -auto-approve) # Long spin up of instances
+    trap destroy_instances EXIT # Destroy instances on exit for any reason
 fi
 
 #./run_ping.sh -n "${dest_fold}_ping" &
@@ -168,7 +173,3 @@ for region in "${regions[@]}"; do
 
     sleep 3
 done
-
-if [ "$no_instances" != true ]; then
-    (cd instances; terraform destroy -auto-approve)
-fi
