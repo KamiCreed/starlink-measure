@@ -79,9 +79,9 @@ run_iperf() {
     fname_down="${name}_down.csv"
     fname_up="${name}_up.csv"
 
-    sizes=(1 10 100 500 1000)
+    sizes=(1 10 100 200 500)
+    headers="timestamp,region,1MB,10MB,100MB,200MB,500MB"
     timestamp=$(date -u +"%s")
-    headers="timestamp,region,1MB,10MB,100MB,500MB,1000MB"
     echo "Running SCP measurements"
     if [ ! -f "$fname_down" ]; then
         echo "$headers" > "$fname_down"
