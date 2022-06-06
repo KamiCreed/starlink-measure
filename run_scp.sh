@@ -125,10 +125,10 @@ regions=(ap-southeast-2 ap-southeast-1 ap-northeast-1 ap-south-1 eu-west-2 me-so
 
 ./gen_main_tf.py "${regions[@]}"
 
-#if [ "$no_instances" != true ]; then
-#    (cd instances; terraform init)
-#    (cd instances; terraform apply -auto-approve) # Long spin up of instances
-#fi
+if [ "$no_instances" != true ]; then
+    (cd instances; terraform init)
+    (cd instances; terraform apply -auto-approve) # Long spin up of instances
+fi
 
 #./run_ping.sh -n "${dest_fold}_ping" &
 
