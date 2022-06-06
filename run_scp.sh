@@ -49,7 +49,7 @@ run_scp_down() {
     ( set -e
 
     TIMEFORMAT='%R' # Required to grab time
-    out=$({ time scp terraform@${instance_ip}:test_${mb}M.img . ; } |& egrep ^[0-9]+.[0-9]+)
+    out=$({ time scp -o "StrictHostKeyChecking=accept-new" terraform@${instance_ip}:test_${mb}M.img . ; } |& egrep ^[0-9]+.[0-9]+)
     echo -n "$out"
     )
 }
@@ -62,7 +62,7 @@ run_scp_up() {
 
     TIMEFORMAT='%R' # Required to grab time
     fallocate -l ${mb}M test_${mb}M.img
-    out=$({ time scp test_${mb}M.img terraform@${instance_ip}: ; } |& egrep ^[0-9]+.[0-9]+)
+    out=$({ time scp -o "StrictHostKeyChecking=accept-new" test_${mb}M.img terraform@${instance_ip}: ; } |& egrep ^[0-9]+.[0-9]+)
     echo -n "$out"
     )
 }
