@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 show_help() {
     echo "Usage: $0 [-n] path/to/dest_measurement_folder"
 }
