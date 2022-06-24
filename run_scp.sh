@@ -116,6 +116,8 @@ run_iperf() {
 
     scp_down_time=$(run_scp_down $instance_ip ${sizes[-1]})
     echo -n "$scp_down_time" >> "$fname_down"
+
+    sleep 3 # Wait before next test
     )
 }
 
