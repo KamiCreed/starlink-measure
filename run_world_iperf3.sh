@@ -90,6 +90,7 @@ run_iperf() {
     length=$6
 
     funcs=(run_tcp run_udp)
+    #funcs=(run_udp)
 
     for i in ${!funcs[@]}; do
         err=1
@@ -119,9 +120,9 @@ regions=(ap-southeast-2 ap-southeast-1 ap-northeast-1 ap-south-1 eu-west-2 me-so
 #regions=(ap-southeast-2 us-west-1)
 #regions=(us-west-1)
 
-./gen_main_tf.py "${regions[@]}"
-
 if [ "$no_instances" != true ]; then
+    ./gen_main_tf.py "${regions[@]}"
+
     (cd instances; terraform init)
     (cd instances; terraform apply -auto-approve) # Long spin up of instances
     trap destroy_instances EXIT # Destroy instances on exit for any reason
