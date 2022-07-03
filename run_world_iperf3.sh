@@ -3,8 +3,8 @@ show_help() {
     echo "$0 [-n] path/to/dest_measurement_folder"
 }
 
-bits_down=78M
-bits_up=4M
+bits_down=88M
+bits_up=15M
 
 OPTIND=1 # Reset in case getopts has been used previously in the shell.
 
