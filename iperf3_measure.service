@@ -6,7 +6,8 @@ StartLimitIntervalSec=0
 Type=simple
 Restart=always
 RestartSec=1
-TimeoutAbortSec=5min
+TimeoutStopSec=600
+TimeoutAbortSec=600
 User=pi
 ExecStart=/home/pi/Starlink/starlink-measure/run_measurements.sh
 
