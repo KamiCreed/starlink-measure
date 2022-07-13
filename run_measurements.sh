@@ -2,10 +2,10 @@
 export PATH=/home/pi/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/games:/usr/games
 cleanup() {
     kill -2 $1
-    wait
 }
 
 output=starlink
+MAX_MEASURE=200
 
 (cd /home/pi/Starlink/starlink-measure; ./run_ping.sh "../${output}_ping" &> /home/pi/Starlink/ping_measure.log) &
 ping_pid=$!
@@ -17,7 +17,7 @@ do
     sleep 1
 done
 
-while true
+for val in {1..$MAX_MEASURE}
 do
     (cd /home/pi/Starlink/starlink-measure; ./run_world_iperf3.sh -n "../${output}_iperf3" &> /home/pi/Starlink/measure.log)
     sleep 1
