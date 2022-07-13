@@ -95,7 +95,7 @@ run_iperf() {
     for i in ${!funcs[@]}; do
         err=1
         count=0
-        until [ "$err" == 0 ] && [ "$count" -lt "$MAX_RETRY" ]; do
+        until [ "$err" == 0 ] || [ "$count" -ge "$MAX_RETRY" ]; do
             # Must be run separately to properly exit the subshell upon error
             ${funcs[$i]} $instance_ip "${fname_down[$i]}" "${fname_up[$i]}" $length
             err=$?
