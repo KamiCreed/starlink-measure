@@ -53,11 +53,17 @@ if [ "$no_instances" != true ]; then
 fi
 
 for region in "${regions[@]}"; do 
-    instance_ip="$(cd instances; terraform output -raw ${region}_public_ip)"
+    count=0
+    while true; do
+        instance_ip="$(cd instances; terraform output -raw ${region}_public_ip)"
+        [[ "$instance_ip" =~ ^([0-9]+\.){2}[0-9]+ ]] && break
+        [ "$count" -lt "$MAX_RETRY" ] || exit 1
+        echo "Failed to get $region IP. Retrying..."
+        sleep 1
+        ((count++))
+    done
+
     region_raw="$(cd instances; terraform output -raw ${region}_region_name)"
-    if [ -z "$instance_ip" ]; then
-        continue
-    fi
     
     region_no_spaces="${region_raw// /_}" # Replace spaces with underscores
     region_name="${region_no_spaces//[^[:alnum:]_]/}" # Remove special charas except underscores
