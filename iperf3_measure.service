@@ -8,7 +8,7 @@ Restart=always
 RestartSec=1
 TimeoutAbortSec=5min
 User=pi
-ExecStart=/home/pi/Starlink/starlink-data/run_measurements.sh
+ExecStart=/home/pi/Starlink/starlink-measure/run_measurements.sh
 
 [Install]
 WantedBy=multi-user.target
