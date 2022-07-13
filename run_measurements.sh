@@ -6,15 +6,19 @@ cleanup() {
 
 output=starlink
 MAX_MEASURE=200
+MAX_RETRY=10
 
 (cd /home/pi/Starlink/starlink-measure; ./run_ping.sh "../${output}_ping" &> /home/pi/Starlink/ping_measure.log) &
 ping_pid=$!
 trap "cleanup $ping_pid" EXIT SIGTERM
 
+count=0
 while ! (cd /home/pi/Starlink/starlink-measure/instances/; ping -c 1 -n `terraform output -raw us-west-1_public_ip 2> /dev/null` &> /dev/null)
 do
+    [ "$count" -lt "$MAX_RETRY" ] || exit 1
     printf "%c" "."
     sleep 1
+    ((count++))
 done
 
 for val in {1..$MAX_MEASURE}

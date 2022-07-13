@@ -131,11 +131,14 @@ fi
 #./run_ping.sh -n "${dest_fold}_ping" &
 
 for region in "${regions[@]}"; do 
+    count=0
     while true; do
         instance_ip="$(cd instances; terraform output -raw ${region}_public_ip)"
         [[ "$instance_ip" =~ ^([0-9]+\.){2}[0-9]+ ]] && break
+        [ "$count" -lt "$MAX_RETRY" ] || exit 1
         echo "Failed to get $region IP. Retrying..."
         sleep 1
+        ((count++))
     done
 
     region_raw="$(cd instances; terraform output -raw ${region}_region_name)"
