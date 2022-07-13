@@ -19,6 +19,6 @@ done
 
 while true
 do
-    (cd /home/pi/Starlink/starlink-measure; ./run_world_iperf3.sh -n "../${output}_iperf3") > /home/pi/Starlink/measure.log 2>&1
+    (cd /home/pi/Starlink/starlink-measure; ./run_world_iperf3.sh -n "../${output}_iperf3" &> /home/pi/Starlink/measure.log)
     sleep 1
 done
