@@ -6,7 +6,7 @@ cleanup() {
 
 output=starlink
 MAX_MEASURE=200
-MAX_RETRY=10
+MAX_RETRY=200
 
 (cd /home/pi/Starlink/starlink-measure; ./run_ping.sh "../${output}_ping" &> /home/pi/Starlink/ping_measure.log) &
 ping_pid=$!
