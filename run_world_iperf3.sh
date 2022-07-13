@@ -134,7 +134,7 @@ for region in "${regions[@]}"; do
     while true; do
         instance_ip="$(cd instances; terraform output -raw ${region}_public_ip)"
         [[ "$instance_ip" =~ ^([0-9]+\.){2}[0-9]+ ]] && break
-        echo "Failed to get $instance_ip IP. Retrying..."
+        echo "Failed to get $region IP. Retrying..."
         sleep 1
     done
 
