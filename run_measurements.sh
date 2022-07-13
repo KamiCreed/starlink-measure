@@ -2,6 +2,8 @@
 export PATH=/home/pi/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/games:/usr/games
 cleanup() {
     kill -2 $1
+    wait
+    exit
 }
 
 output=starlink
