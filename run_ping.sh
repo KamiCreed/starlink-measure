@@ -25,6 +25,7 @@ if [ $# -eq 0 ]; then
 fi
 
 dest_fold="$1"
+MAX_RETRY=10
 
 unique_fname() {
     name=$1
