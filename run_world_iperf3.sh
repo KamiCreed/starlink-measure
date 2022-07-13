@@ -131,7 +131,13 @@ fi
 #./run_ping.sh -n "${dest_fold}_ping" &
 
 for region in "${regions[@]}"; do 
-    instance_ip="$(cd instances; terraform output -raw ${region}_public_ip)"
+    while true; do
+        instance_ip="$(cd instances; terraform output -raw ${region}_public_ip)"
+        [ ! -z "$instance_ip" ] || break
+        echo "Failed to get $instance_ip IP. Retrying..."
+        sleep 1
+    done
+
     region_raw="$(cd instances; terraform output -raw ${region}_region_name)"
 
     region_no_spaces="${region_raw// /_}" # Replace spaces with underscores
