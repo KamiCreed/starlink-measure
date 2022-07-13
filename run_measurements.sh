@@ -11,7 +11,7 @@ output=starlink
 ping_pid=$!
 trap "cleanup $ping_pid" EXIT SIGTERM
 
-while ! (cd /home/pi/Starlink/starlink-measure/instances/; ping -c 1 -n `terraform output -raw us-west-1_public_ip &> /dev/null` &> /dev/null)
+while ! (cd /home/pi/Starlink/starlink-measure/instances/; ping -c 1 -n `terraform output -raw us-west-1_public_ip 2> /dev/null` &> /dev/null)
 do
     printf "%c" "."
     sleep 1
