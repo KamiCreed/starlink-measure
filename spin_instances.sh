@@ -2,4 +2,12 @@
 cd instances
 terraform init -input=false
 terraform plan -out=tfplan -input=false
-terraform apply -input=false -auto-approve tfplan
+
+count=0
+until terraform apply -input=false -auto-approve tfplan
+do
+    [ "$count" -lt "10" ] || kill -INT 0 # Kill process group
+    echo "Failed to spin up instances. Trying again..."
+    sleep 1
+    ((count++))
+done
