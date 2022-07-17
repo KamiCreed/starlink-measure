@@ -20,7 +20,7 @@ def main(args):
         region_dict[region]['source'] = './modules/inst'
         region_dict[region]['region'] = region
         if region == 'me-south-1':
-            region_dict[region]['instance_type'] = 't3.micro'
+            region_dict[region]['instance_type'] = args.me_instance_type
 
         main_config[KEY_MODULE].append(region_dict)
 
@@ -39,6 +39,7 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate main terraform JSON config.')
+    parser.add_argument('-me', '--me-instance-type', default='t3.micro', help='Instance type for region me-south-1, since they do not have t3.nano. Default: t3.micro')
     parser.add_argument('regions', nargs='+', help='Regions to spin up')
 
     args = parser.parse_args()

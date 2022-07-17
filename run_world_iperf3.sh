@@ -121,7 +121,7 @@ regions=(ap-southeast-2 ap-southeast-1 ap-northeast-1 ap-south-1 eu-west-2 me-so
 #regions=(us-west-1)
 
 if [ "$no_instances" != true ]; then
-    ./gen_main_tf.py "${regions[@]}"
+    ./gen_main_tf.py --me "t3.medium" "${regions[@]}"
     ./spin_instances.sh
     trap destroy_instances EXIT # Destroy instances on exit for any reason
 fi
