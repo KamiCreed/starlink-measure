@@ -77,6 +77,7 @@ resource "aws_security_group" "allow_iperf3" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # Iperf3 ports
   ingress {
     from_port   = 5201
     to_port     = 5202
@@ -91,10 +92,19 @@ resource "aws_security_group" "allow_iperf3" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   
+  # Ping
   ingress {
     from_port = -1
     to_port = -1
     protocol = "icmp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # bwctld
+  ingress {
+    from_port = 4823
+    to_port = 4823
+    protocol = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
