@@ -18,7 +18,8 @@ data "aws_ami" "ubuntu" {
 
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-*20*-amd64-server-*"]
+    #values = ["ubuntu/images/hvm-ssd/ubuntu-*-20.04-amd64-server-*"]
+    values = ["ubuntu/images/hvm-ssd/ubuntu-*-16.04-amd64-server-*"]
   }
 
   filter {
@@ -108,6 +109,15 @@ resource "aws_security_group" "allow_iperf3" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # All ports for pantheon
+  ingress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -135,6 +145,21 @@ resource "aws_instance" "web" {
   tags = {
     Name = "iperf3-server"
   }
+}
+
+resource "aws_ebs_volume" "data-vol" {
+ availability_zone = "us-west-1b"
+ size = 15
+ tags = {
+        Name = "data-volume"
+ }
+
+}
+
+resource "aws_volume_attachment" "web-vol" {
+ device_name = "/dev/sdh"
+ volume_id = "${aws_ebs_volume.data-vol.id}"
+ instance_id = "${aws_instance.web.id}"
 }
 
 output "public_ip" {

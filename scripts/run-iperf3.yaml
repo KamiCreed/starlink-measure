@@ -32,7 +32,7 @@ runcmd:
     sudo tee '/etc/apt/apt.conf.d/01ubuntu' <<'EOF'
     APT
     {
-      Default-Release "focal";
+      Default-Release "xenial";
     };
     EOF
   - sudo echo 'deb http://ftp.ca.debian.org/debian buster main' >> /etc/apt/sources.list
@@ -42,3 +42,14 @@ runcmd:
   - sudo apt-mark hold iperf3
   - iperf3 -s -J -D --forceflush --logfile /home/terraform/${region}-throughput-server-send.$(date -u +"%Y-%m-%d_%H-%M-%S").log
   - iperf3 -s -J -D --forceflush --logfile /home/terraform/${region}-throughput-server-receive.$(date -u +"%Y-%m-%d_%H-%M-%S").log -p 5202
+  - wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
+  - python /get-pip.py
+  - echo 'net.ipv4.ip_forward=1' >> /etc/sysctl.conf
+  - sudo ln -s /usr/bin/nodejs /usr/bin/node
+  - sudo apt install --install-recommends -y linux-generic-hwe-16.04
+  - sudo reboot
+    #- git clone https://github.com/StanfordSNR/pantheon.git
+    #- cd pantheon; git submodule update --init --recursive
+    #- cd pantheon; ./tools/install_deps.sh
+    #- cd pantheon; ./src/experiments/setup.py --install-deps --all
+    #- cd pantheon; ./src/experiments/setup.py --setup --all
