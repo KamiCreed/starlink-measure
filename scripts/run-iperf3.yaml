@@ -44,7 +44,8 @@ runcmd:
   - iperf3 -s -J -D --forceflush --logfile /home/terraform/${region}-throughput-server-receive.$(date -u +"%Y-%m-%d_%H-%M-%S").log -p 5202
   - wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
   - python /get-pip.py
-  - echo 'net.ipv4.ip_forward=1' >> /etc/sysctl.conf
+  - echo 'net.ipv4.ip_forward=1
+    net.core.default_qdisc=fq' >> /etc/sysctl.conf
   - sudo ln -s /usr/bin/nodejs /usr/bin/node
   - sudo apt install --install-recommends -y linux-generic-hwe-16.04
   - sudo reboot
