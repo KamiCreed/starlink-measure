@@ -18,3 +18,21 @@ simultaneously as they should not necessarily interfere with each other much due
 ```
 ./run_ping.sh [-nh] path/to/dest/folder
 ```
+
+## Pantheon KVM
+
+Run the following before setting up [Pantheon](https://github.com/StanfordSNR/pantheon).
+
+```bash
+wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
+python ./get-pip.py
+```
+```bash
+echo 'net.ipv4.ip_forward=1
+net.core.default_qdisc=fq' >> /etc/sysctl.conf
+```
+```bash
+sudo ln -s /usr/bin/nodejs /usr/bin/node
+sudo apt install --install-recommends -y linux-generic-hwe-16.04
+sudo reboot
+```
