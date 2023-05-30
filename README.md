@@ -36,3 +36,14 @@ sudo ln -s /usr/bin/nodejs /usr/bin/node
 sudo apt install --install-recommends -y linux-generic-hwe-16.04
 sudo reboot
 ```
+
+On the server, copy the `src` folder into a created `pantheon` subdir:
+```bash
+mkdir pantheon
+cp -r src pantheon
+```
+
+Always run the setup before running Pantheon on both the client and server:
+```bash
+src/experiments/setup.py [--all | --schemes "<cc1> <cc2> ..."]
+```
