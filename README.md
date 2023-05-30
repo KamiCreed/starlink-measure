@@ -24,17 +24,28 @@ simultaneously as they should not necessarily interfere with each other much due
 Run the following before setting up [Pantheon](https://github.com/StanfordSNR/pantheon).
 
 ```bash
+sudo apt install python-minimal
 wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
 python ./get-pip.py
 ```
+
 ```bash
-echo 'net.ipv4.ip_forward=1
-net.core.default_qdisc=fq' >> /etc/sysctl.conf
+sudoedit /etc/sysctl.conf
+```
+And enter the following at the bottom of the file:
+```
+net.ipv4.ip_forward=1
+net.core.default_qdisc=fq
 ```
 ```bash
 sudo ln -s /usr/bin/nodejs /usr/bin/node
 sudo apt install --install-recommends -y linux-generic-hwe-16.04
 sudo reboot
+```
+
+Install some python dependencies:
+```bash
+pip install pyyaml
 ```
 
 On the server, copy the `src` folder into a created `pantheon` subdir:
