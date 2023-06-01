@@ -24,7 +24,7 @@ simultaneously as they should not necessarily interfere with each other much due
 Run the following before setting up [Pantheon](https://github.com/StanfordSNR/pantheon).
 
 ```bash
-sudo apt install python-minimal
+sudo apt install python-minimal autoconf pkg-config
 wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
 python ./get-pip.py
 ```

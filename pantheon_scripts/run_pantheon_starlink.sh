@@ -11,5 +11,6 @@ fi
 
 cd "$pantheon_dir"
 
-src/experiments/test.py remote --data-dir "$data_dir" --all $ssh_cmd
+# 20 runs of 30 seconds with 5 minute rest
+src/experiments/test.py remote --start-run-id $i -t 30 -f 4 --run-times 20 --data-dir "$data_dir" --all $ssh_cmd
 src/experiments/analyze.py --data-dir "$data_dir"
