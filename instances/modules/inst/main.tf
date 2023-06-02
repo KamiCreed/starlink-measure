@@ -149,7 +149,7 @@ resource "aws_instance" "web" {
 
 resource "aws_ebs_volume" "data-vol" {
  availability_zone = "us-west-1b"
- size = 15
+ size = 20
  tags = {
         Name = "data-volume"
  }
