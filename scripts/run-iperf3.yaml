@@ -24,6 +24,9 @@ users:
 # Downloads the iperf3 package
 packages:
   - wget
+  - python-minimal
+  - autoconf
+  - pkg-config
     #- qemu-kvm
     #- libvirt-daemon-system
     #- libvirt-clients
@@ -46,5 +49,15 @@ runcmd:
   - sudo apt-mark hold iperf3
   #- iperf3 -s -J -D --forceflush --logfile /home/terraform/${region}-throughput-server-send.$(date -u +"%Y-%m-%d_%H-%M-%S").log
   #- iperf3 -s -J -D --forceflush --logfile /home/terraform/${region}-throughput-server-receive.$(date -u +"%Y-%m-%d_%H-%M-%S").log -p 5202
-  - sudo adduser $USER libvirt
-  - sudo adduser $USER kvm
+  #- sudo adduser $USER libvirt
+  #- sudo adduser $USER kvm
+  - wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
+  - python ./get-pip.py
+  - |
+    sudo tee -a '/etc/sysctl.conf' <<'EOF'
+    net.ipv4.ip_forward=1
+    net.core.default_qdisc=fq
+    EOF
+  - sudo ln -s /usr/bin/nodejs /usr/bin/node
+  - sudo apt install --install-recommends -y linux-generic-hwe-16.04
+  - sudo reboot

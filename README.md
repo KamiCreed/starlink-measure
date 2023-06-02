@@ -43,11 +43,6 @@ sudo apt install --install-recommends -y linux-generic-hwe-16.04
 sudo reboot
 ```
 
-Install some python dependencies:
-```bash
-pip install pyyaml
-```
-
 On the server, copy the `src` folder into a created `pantheon` subdir:
 ```bash
 mkdir pantheon
