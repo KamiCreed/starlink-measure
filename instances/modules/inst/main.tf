@@ -148,7 +148,7 @@ resource "aws_instance" "web" {
 }
 
 resource "aws_ebs_volume" "data-vol" {
- availability_zone = "us-west-1b"
+ availability_zone = aws_subnet.subnet_public.availability_zone
  size = 20
  tags = {
         Name = "data-volume"
