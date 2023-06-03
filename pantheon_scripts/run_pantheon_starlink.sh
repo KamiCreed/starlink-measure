@@ -5,7 +5,7 @@ data_dir="$2"
 ssh_cmd="$3"
 sender="$4"
 
-if [ "$#" -ne 3 ]; then
+if [ "$#" -ne 4 ]; then
     echo "Usage: $0 <pantheon_dir> <data_dir> <ssh_cmd> <sender>" >&2
     exit 2
 fi
