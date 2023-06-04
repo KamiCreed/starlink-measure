@@ -15,7 +15,7 @@ cd "$pantheon_dir"
 schemes=(cubic bbr)
 
 # 20 tests of 20 runs of 30 seconds with 5 minute rest
-for scheme in "${regions[@]}"; do
+for scheme in "${schemes[@]}"; do
     for i in {1..20}; do
         spec_data_dir="${data_dir}_${scheme}_test${i}"
         src/experiments/test.py remote --sender $sender -t 30 -f 4 --run-times 20 --data-dir "$data_dir" --schemes "${scheme}" $ssh_cmd
