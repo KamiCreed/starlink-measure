@@ -20,7 +20,7 @@ schemes=(cubic bbr)
 for scheme in "${schemes[@]}"; do
     for i in {1..20}; do
         spec_data_dir="${data_dir}_${scheme}_test${i}"
-        src/experiments/test.py remote --sender $sender -t 30 -f 4 --run-times 20 --data-dir "$spec_data_dir" --schemes "${scheme}" $ssh_cmd
+        src/experiments/test.py remote --pkill-cleanup --sender $sender -t 30 -f 4 --run-times 20 --data-dir "$spec_data_dir" --schemes "${scheme}" $ssh_cmd
         sleep 300
     done
 done
