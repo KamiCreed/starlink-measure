@@ -11,7 +11,15 @@ if [ "$#" -ne 4 ]; then
 fi
 
 cd "$pantheon_dir"
+#schemes=(cubic vegas bbr ledbat pcc verus sprout quic scream webrtc copa taova vivace pcc_experimental fillp indigo fillp_sheep)
+schemes=(cubic bbr)
 
-# 20 runs of 30 seconds with 5 minute rest
-src/experiments/test.py remote --sender $sender -t 30 -f 4 --run-times 20 --data-dir "$data_dir" --all $ssh_cmd
-src/analysis/analyze.py --data-dir "$data_dir"
+# 20 tests of 20 runs of 30 seconds with 5 minute rest
+for scheme in "${regions[@]}"; do
+    for i in {1..20}; do
+        spec_data_dir="${data_dir}_${scheme}_test${i}"
+        src/experiments/test.py remote --sender $sender -t 30 -f 4 --run-times 20 --data-dir "$data_dir" --schemes "${scheme}" $ssh_cmd
+        src/analysis/analyze.py --data-dir "$data_dir"
+        sleep 300
+    done
+done
