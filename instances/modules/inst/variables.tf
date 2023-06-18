@@ -13,5 +13,5 @@ variable "region" {
 
 variable "instance_type" {
   description = "Instance type of the server"
-  default = "t3.medium"
+  default = "t3.large"
 }
